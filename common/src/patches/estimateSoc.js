@@ -30,7 +30,7 @@ const ADDRESSES = {
   }
 }
 
-const appendedCode = "02000000481C0020324B30B57B4418680388002B5AD0304A7A4411680A78AABB2E4C7C4425780132D4B2A54205D930F81240A34228BF2346F5E740F68B22934245D941F26702934228BF1346A3F68C239BB23222B3FBF2F0214A7A44145C02441E20434340F2DC50B3FBF0F500FB15335278121B534393FBF0F32344642BA8BF642323EAE3734B7001230B70154B4A787B4418681449154B79447B441B6809681B6809685B1A44F62061B3FBF1F364214B430F4979440988B3FBF1F35BB2D31A642BA8BF642323EAE373037030BD0023BFE700BF08010000E8FFFFFFED0000009600000080000000840000007E0000006C00000000000000010203040507080B0E101213191E21252B30353C43474C525C61640F381C0020BC1A0020D41B0020D81B0020280A"
+const appendedCode = "02000000481c0020394b30b57b4419680b78002b48d1374a7a441488364a7a441068dab2a24205da30f812200133002af7d130bd01220388944207dd30f812500132ab4228bf2b46d2b2f5e72b4a7a441288b3fbf2f340f68b22934245d941f26702934228bf1346a3f68c239bb23222b3fbf2f0224a7a44145c02441e20434340f2dc50b3fbf0f500fb15335278121b534393fbf0f32344642ba8bf642323eae3734b7001230b70164b4a787b4418681549164b79447b441b6809681b6809685b1a44f6206193fbf1f364214b4310497944098893fbf1f35bb2d31a642ba8bf642323eae3730370a3e70023bfe700bff4ffffff1a0100001a010000e20000009a000000880000008c000000860000007400000000000000010203040507080b0e101213191e21252b30353c43474c525c61640001000f00381c0020bc1a0020d41b0020d81b0020280a"
 
 const extraBytes = (() => {
   const bytes = fromHexString(appendedCode)
@@ -43,7 +43,7 @@ export const estimateSoc = {
   priority: 3,
   description: `Estimates the state of charge via battery voltage and capacity`,
   attribution: [
-    
+    "exPHAT"
   ],
   supported: allGenerations,
   supportsOta: true,
@@ -67,14 +67,18 @@ export const estimateSoc = {
       throw "outOfRange"
 
     let cellCount = 0
+    let scalingFactor = 0
     switch (Math.floor(revision / 1000)) {
       case BoardGeneration.GT:
         cellCount = 18
+        scalingFactor = 10
         break
       case BoardGeneration.XR:
         cellCount = 15
+        scalingFactor = 1
       case BoardGeneration.Pint:
         cellCount = 15
+        scalingFactor = 1
         break
       default:
         throw "unsupportedBoard"
@@ -141,10 +145,18 @@ export const estimateSoc = {
       },
       { // Cell count
         start: {
-          5040: -19,
-          6109: -19
+          // Needs to be aligned to halfword even though it's a single byte
+          5040: -20,
+          6109: -20
         },
-        data: [cellCount],
+        data: uintByteArray(cellCount, 2, true),
+      },
+      { // Scaling factor
+        start: {
+          5040: -22,
+          6109: -22
+        },
+        data: uintByteArray(scalingFactor, 2, true),
       },
     ]
   },
