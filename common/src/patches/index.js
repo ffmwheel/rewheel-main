@@ -15,3 +15,5 @@ export { sensorPosi } from './sensorPosi.js'
 export { estimateSoc } from './estimateSoc.js'
 export { gtShapingBoost } from './gtShapingBoost.js'
 // export { setAngleOffset } from "./setAngleOffset.js"
+export { acceptPintXBMS } from './acceptPintXBMS.js'
+export { spoofAsPintX } from './spoofAsPintX.js'

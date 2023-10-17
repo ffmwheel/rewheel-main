@@ -87,6 +87,12 @@ setTopSpeed:
 spoofAsXR:
   name: Spoof Board as XR
   description: Have the board appear as an XR inside of the app for easy access to custom shaping settings
+spoofAsPintX:
+  name: Spoof Board as Pint X
+  description: Have the board appear as a Pint X inside of the app
+acceptPintXBMS:
+  name: Allow XR / PintX BMS's
+  description: Reject Pint BMS's and accept connections to XR and PintX BMS's instead
 estimateSoc:
   name: Rescale State of Charge
   description: Rescales battery readings for higher capacity battery packs
@@ -120,4 +126,3 @@ remoteTilt:
 gtShapingBoost:
   name: Boost Custom Shaping
   description: Increases the sensitivity and maximum values of custom shaping
-
